@@ -135,8 +135,13 @@ function generateRulesIndex(basedir) {
 
     output += "    var rules = Object.create(null);\n";
 
-    find(basedir + "rules/").filter(fileType("js")).forEach(function(filename) {
-        const basename = path.basename(filename, ".js");
+    const jsFilter = fileType("js");
+    function getBasename (filename) {
+      return filename.replace(".js", "").replace("tmp/rules/", "");
+    }
+
+    find(basedir + "rules/").filter(jsFilter).forEach(function(filename) {
+        const basename = getBasename(filename);
 
         output += "    rules[\"" + basename + "\"] = require(\"./rules/" + basename + "\");\n";
     });
