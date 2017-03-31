@@ -187,6 +187,30 @@ ruleTester.run("prefer-template", rule, {
             code: "foo + 'handles unicode escapes correctly: \\x27'", // "\x27" === "'"
             output: "`${foo  }handles unicode escapes correctly: \\x27`",
             errors
+        },
+        {
+            code: "foo + \"does not unescape an escaped single quote in a double-quoted string: \\'\"",
+            output: "`${foo}does not unescape an escaped single quote in a double-quoted string: \\'`",
+            options: [{ trim: true }],
+            errors
+        },
+        {
+            code: "foo + 'handles unicode escapes correctly: \\x27'", // "\x27" === "'"
+            output: "`${foo}handles unicode escapes correctly: \\x27`",
+            options: [{ trim: true }],
+            errors
+        },
+        {
+            code: "var foo = bar + ('baz') + 'qux' + (boop);",
+            output: "var foo = `${bar}baz` + `qux${boop}`;",
+            options: [{ trim: true }],
+            errors
+        },
+        {
+            code: "var foo = `${ bar }baz` + `qux${ boop }`;",
+            output: "var foo = `${bar}baz` + `qux${boop}`;",
+            options: [{ trim: true }],
+            errors
         }
     ]
 });
