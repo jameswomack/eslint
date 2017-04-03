@@ -16,6 +16,8 @@ const RuleTester = require("../../../lib/testers/rule-tester");
 // Tests
 //------------------------------------------------------------------------------
 
+const UNEXPECTED_SPACE_ERROR_MESSAGE = "There should be no spaces inside this bracket.";
+
 const errors = [{
     message: "Unexpected string concatenation.",
     type: "BinaryExpression"
@@ -210,7 +212,25 @@ ruleTester.run("prefer-template", rule, {
             code: "var foo = `${ bar }baz` + `qux${ boop }`;",
             output: "var foo = `${bar}baz` + `qux${boop}`;",
             options: [{ trim: true }],
-            errors
+            errors: [UNEXPECTED_SPACE_ERROR_MESSAGE, UNEXPECTED_SPACE_ERROR_MESSAGE, UNEXPECTED_SPACE_ERROR_MESSAGE, UNEXPECTED_SPACE_ERROR_MESSAGE]
+        },
+        {
+            code: "var foo = `${                bar                }baz` + `qux${                boop                }`;",
+            output: "var foo = `${bar}baz` + `qux${boop}`;",
+            options: [{ trim: true }],
+            errors: [UNEXPECTED_SPACE_ERROR_MESSAGE, UNEXPECTED_SPACE_ERROR_MESSAGE, UNEXPECTED_SPACE_ERROR_MESSAGE, UNEXPECTED_SPACE_ERROR_MESSAGE]
+        },
+        {
+            code: "var foo = `bar${ baz }qux${ quux }`;",
+            output: "var foo = `bar${baz}qux${quux}`;",
+            options: [{ trim: true }],
+            errors: [UNEXPECTED_SPACE_ERROR_MESSAGE, UNEXPECTED_SPACE_ERROR_MESSAGE, UNEXPECTED_SPACE_ERROR_MESSAGE]
+        },
+        {
+            code: "var foo = `3 backslashes: \\\\\\${bar}${  baz}`;",
+            output: "var foo = `3 backslashes: \\\\\\${bar}${baz}`;",
+            options: [{ trim: true }],
+            errors: [UNEXPECTED_SPACE_ERROR_MESSAGE]
         }
     ]
 });
